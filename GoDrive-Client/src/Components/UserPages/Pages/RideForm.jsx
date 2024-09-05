@@ -150,20 +150,20 @@ const RideForm = () => {
     }
   }, [location]);
 
-  useEffect(() => {
-    if (!mapRef.current) {
-      const map = new window.google.maps.Map(document.getElementById("map"), {
-        center: { lat: 13.0303, lng: 80.1696 },
-        zoom: 12,
-      });
+  // useEffect(() => {
+  //   if (!mapRef.current) {
+  //     const map = new window.google.maps.Map(document.getElementById("map"), {
+  //       center: { lat: 13.0303, lng: 80.1696 },
+  //       zoom: 12,
+  //     });
 
-      mapRef.current = map;
-      directionsService.current = new window.google.maps.DirectionsService();
-      directionsRenderer.current = new window.google.maps.DirectionsRenderer();
+  //     mapRef.current = map;
+  //     directionsService.current = new window.google.maps.DirectionsService();
+  //     directionsRenderer.current = new window.google.maps.DirectionsRenderer();
 
-      directionsRenderer.current.setMap(mapRef.current);
-    }
-  }, []);
+  //     directionsRenderer.current.setMap(mapRef.current);
+  //   }
+  // }, []);
 
 
   // useEffect(() => {
@@ -493,23 +493,25 @@ const RideForm = () => {
           </button>
         </form>
         )}
-{isForm2Visible && (
-            <form
-              onSubmit={handleSubmit}
-              className="lg:col-span-1 bg-white p-5 h-96 w-90 lg:order-1 ml-16 rounded-lg sm:order-2 shadow-lg sticky top-5 min-h-fit"
-            >
-                      
-         
-            <IoClose 
-              className="text-xl cursor-pointer"
-              onClick={closefourthPopup}
-            />
-          
-          <h2 className="text-xl font-bold mb-4 text-gray-700">
+
+      {isForm2Visible && (
+        <form
+          onSubmit={handleSubmit}
+          className="lg:col-span-1 bg-white p-5 h-96 w-90 lg:order-1 ml-16 rounded-lg sm:order-2 shadow-lg sticky top-5 min-h-fit overflow-y-auto"
+        >
+          <IoClose
+            className="text-xl cursor-pointer"
+            onClick={closefourthPopup}
+          />
+
+          {/* Sticky Header */}
+          <h2 className="text-xl font-bold mb-6 text-gray-700 sticky top-0 bg-white p-2 z-10">
             When do you want to be picked up?
           </h2>
-          <div>
-            <label className="block text-gray-700">Date</label>
+
+          {/* Date Input */}
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Date</label>
             <input
               type="date"
               value={pickupTime.date || ""}
@@ -519,8 +521,10 @@ const RideForm = () => {
               className="border border-gray-300 p-2 rounded w-full"
             />
           </div>
-          <div>
-            <label className="block text-gray-700">Time</label>
+
+          {/* Time Input */}
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-2">Time</label>
             <input
               type="time"
               value={pickupTime.time || ""}
@@ -530,27 +534,35 @@ const RideForm = () => {
               className="border border-gray-300 p-2 rounded w-full"
             />
           </div>
-          <h1 className="border">
-            <BiSolidCalendarHeart className="inline-block " />
+
+          {/* Info Section */}
+          <h1 className="border p-4 mb-6">
+            <BiSolidCalendarHeart className="inline-block mr-2" />
             Choose your pickup time up to 90 days in advance
           </h1>
-          <h1 className="border">
-            <GiSandsOfTime className="inline-block" />
+
+          <h1 className="border p-4 mb-6">
+            <GiSandsOfTime className="inline-block mr-2" />
             Extra wait time included to meet your ride
           </h1>
-          <h1 className="border">
-            <TiCancel className="inline-block" />
+
+          <h1 className="border p-4 mb-6">
+            <TiCancel className="inline-block mr-2" />
             Cancel at no charge up to 60 minutes in advance
           </h1>
+
+          {/* Sticky Button */}
           <button
-             // Close the popup
-            className="bg-black text-white text-s p-2 rounded mt-4 w-full"
+            type="submit"
+            className="bg-black text-white text-s p-2 rounded w-full sticky bottom-0 mt-6 z-10"
           >
             Done
           </button>
-        
-            </form>
-          )}
+        </form>
+      )}
+
+
+
 
       </div>
 
