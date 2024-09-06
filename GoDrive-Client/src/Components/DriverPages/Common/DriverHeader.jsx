@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 import constants from '../../../Utils/constant';
 import { useAuth } from '../../../Context/AuthContext'; 
 
@@ -8,6 +7,7 @@ const DriverHeader = () => {
   const navigate = useNavigate();
   const { authState, removeAuth } = useAuth();
   const [driverName, setDriverName] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (authState && authState.name) {
@@ -23,6 +23,10 @@ const DriverHeader = () => {
     }, 1300);
   };
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   return (
     <header className="bg-black text-white shadow-md">
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
@@ -34,24 +38,34 @@ const DriverHeader = () => {
           />
         </Link>
         <nav className="flex space-x-4">
-          <Link to="/driver" className="hover:bg-black px-3 py-2 rounded">Home</Link>
+          <Link to="/driver" className="hover:bg-gray-700 px-3 py-2 rounded">Home</Link>
+          {/* <Link to="/driver/duty" className="hover:bg-gray-700 px-3 py-2 rounded">Duty</Link> */}
         </nav>
-        {/* <nav className="flex space-x-4">
-          <Link to="/driver/duty" className="hover:bg-black px-3 py-2 rounded">Duty</Link>
-        </nav> */}
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <FaUserCircle />
-            <Link to="/driver/profile-settings" className="hover:underline">
-              <span className="text-white">{driverName}</span> {/* Make the name clickable */}
-            </Link>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center text-sm bg-black hover:bg-black px-3 py-2 rounded-lg transition duration-200 ease-in-out"
+        <div className="relative">
+          <button 
+            onClick={toggleDropdown} 
+            className="flex items-center px-4 py-2 text-white rounded-lg"
           >
-            <FaSignOutAlt className="mr-2" /> Logout
+            <span className="mr-2">{driverName}</span>
+            <span className="text-sm">▼</span>
           </button>
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-black text-white rounded-lg hover:rounded-lg shadow-lg">
+              <Link
+                to="/driver/profile-settings"
+                className="block px-4 py-2 hover:bg-gray-700"
+                onClick={() => setIsDropdownOpen(false)}
+              >
+                Profile Settings
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-4 py-2 hover:bg-black"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

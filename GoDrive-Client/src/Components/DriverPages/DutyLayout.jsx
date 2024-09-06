@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DutyHeader from './Common/Duty_Header'; 
-import { Outlet, Navigate, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import OnDutyPage from './Pages/Duty/OnDutyPage';
 import OffDutyPage from './Pages/Duty/OffDutyPage';
 
@@ -8,7 +8,7 @@ const DutyLayout = () => {
   const [isOnDuty, setIsOnDuty] = useState(false);
 
   const toggleDuty = () => {
-    setIsOnDuty((prevState) => !prevState);
+    setIsOnDuty(prevState => !prevState);
   };
 
   return (
@@ -16,15 +16,10 @@ const DutyLayout = () => {
       <DutyHeader isOnDuty={isOnDuty} toggleDuty={toggleDuty} />
       <main className="flex-1 p-6">
         <div className="max-w-4xl mx-auto">
-          {isOnDuty ? <OnDutyPage /> : <OffDutyPage />}
+         
           <Outlet />
-        
-          </div>
-          <Outlet />
-
+        </div>
       </main>
-      <Outlet />
-
     </div>
   );
 };

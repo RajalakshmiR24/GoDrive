@@ -122,6 +122,7 @@ const AppRoutes = () => {
       element: <PrivateRoute element={<DutyLayout />} role="driver" />, // Use "driver" role since "duty" isn't a role.
       children: [
         { index: true, element: <OffDutyPage /> },
+        { path: "off-duty", element: <OffDutyPage /> },
         { path: "on-duty", element: <OnDutyPage /> }, 
         { path: "driver-details", element: <Driverdetails /> }, 
         { path: "earnings", element: <EarningsTracker /> }, 
