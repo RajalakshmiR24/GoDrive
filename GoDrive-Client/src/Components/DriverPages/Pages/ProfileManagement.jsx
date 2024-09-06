@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../../Utils/axios'; // Import the configured axios instance
-import { FaEdit, FaEye, FaDownload } from 'react-icons/fa'; // Import icons
+import { FaEdit, FaEye, FaDownload, FaArrowLeft } from 'react-icons/fa'; // Import icons
+import jsPDF from 'jspdf'; // Import jsPDF
+import { useRef } from 'react';
 
-const ProfileManagement = ({ driverId }) => {
+const ProfileManagement = ({ driverId, onBack }) => { // Add onBack prop for handling back action
   const [profile, setProfile] = useState({
     name: '',
     contact: '',
@@ -21,7 +23,6 @@ const ProfileManagement = ({ driverId }) => {
   });
 
   const [loading, setLoading] = useState(true);
-
   const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
@@ -55,14 +56,14 @@ const ProfileManagement = ({ driverId }) => {
   }, [driverId]);
 
   const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setProfile({ ...profile, [name]: type === 'checkbox' ? checked : value });
   };
 
   const handleSave = async () => {
     try {
-      // Update profile logic
       const updatedProfile = {
-        name: profile.name.split(' ')[0],
+        firstName: profile.name.split(' ')[0],
         lastName: profile.name.split(' ')[1] || '',
         phone: profile.contact,
         email: profile.email,
@@ -78,24 +79,40 @@ const ProfileManagement = ({ driverId }) => {
         verified: profile.verified,
       };
 
-      await api.put(`/drivers/update/${driverId}`, updatedProfile); // Update profile via PUT request
+      await api.put(`/drivers/update/${driverId}`, updatedProfile);
       console.log('Profile updated:', updatedProfile);
-      setIsEditMode(false); // Exit edit mode after saving
+      setIsEditMode(false);
     } catch (error) {
       console.error('Error saving profile:', error);
     }
   };
 
-  const handleDownload = () => {
-    const fileData = JSON.stringify(profile, null, 2);
-    const blob = new Blob([fileData], { type: 'application/json' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `profile_${driverId}.json`);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(12);
+    doc.text('Profile Information', 10, 10);
+
+    const profileData = `
+      Name: ${profile.name}
+      Contact: ${profile.contact}
+      Email: ${profile.email}
+      License Number: ${profile.licenseNumber}
+      Vehicle Make: ${profile.vehicleMake}
+      Vehicle Model: ${profile.vehicleModel}
+      Vehicle Year: ${profile.vehicleYear}
+      Vehicle Registration: ${profile.vehicleRegistration}
+      Insurance Policy: ${profile.insurancePolicy}
+      Driving Experience: ${profile.drivingExperience} years
+      Accidents: ${profile.accidents}
+      Traffic Violations: ${profile.trafficViolations}
+      Verified: ${profile.verified ? 'Yes' : 'No'}
+    `;
+    
+    doc.text(profileData, 10, 20);
+    doc.save(`profile_${driverId}.pdf`);
   };
 
   if (loading) {
@@ -104,9 +121,15 @@ const ProfileManagement = ({ driverId }) => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-xl font-bold">Profile Management</h2>
-      
-      {/* Display all fields in text format */}
+      <div className="flex items-center mb-4">
+        <button
+          className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-500 text-white hover:bg-blue-600"
+          onClick={onBack}
+        >
+          <FaArrowLeft />
+        </button>
+      </div>
+
       <div className="space-y-2">
         {!isEditMode ? (
           <>
@@ -130,6 +153,7 @@ const ProfileManagement = ({ driverId }) => {
               value={profile.name}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Name"
             />
             <input
               type="text"
@@ -137,19 +161,39 @@ const ProfileManagement = ({ driverId }) => {
               value={profile.contact}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Contact"
             />
-            {/* Add similar input fields for the rest */}
+            <input
+              type="email"
+              name="email"
+              value={profile.email}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Email"
+            />
+           
+            
+            <label>
+              <input
+                type="checkbox"
+                name="verified"
+                checked={profile.verified}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              Verified
+            </label>
           </>
         )}
       </div>
 
-      {/* Action Buttons */}
       <div className="flex justify-end space-x-4 mt-4">
         <button
           className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md"
           onClick={() => setIsEditMode(!isEditMode)}
         >
-          <FaEdit className="mr-2" /> {isEditMode ? 'Cancel Edit' : 'Edit'}
+          <FaEdit className="mr-2" />
+          {isEditMode ? 'Cancel Edit' : 'Edit'}
         </button>
         {isEditMode && (
           <button
@@ -159,11 +203,12 @@ const ProfileManagement = ({ driverId }) => {
             <FaEye className="mr-2" /> Save Changes
           </button>
         )}
+      
         <button
-          className="flex items-center px-4 py-2 bg-gray-500 text-white rounded-md"
-          onClick={handleDownload}
+          className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md"
+          onClick={generatePDF}
         >
-          <FaDownload className="mr-2" /> Download
+          <FaDownload className="mr-2" /> Download PDF
         </button>
       </div>
     </div>
