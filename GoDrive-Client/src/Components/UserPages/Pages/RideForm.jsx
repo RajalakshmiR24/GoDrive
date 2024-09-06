@@ -54,8 +54,9 @@ const RideForm = () => {
   const closeSecondPopup = () => setIsSecondPopupOpen(false);
   const handleThirdPopup = () => { setThirdPopupOpen((prev) => !prev);};
   const closethirdPopup = () => setThirdPopupOpen(false);
-  const closefourthPopup = () => setfourthPopupOpen(false);
-  
+  const [fourthPopupOpen, setfourthPopupOpen] = useState(true);
+
+  const closefourthPopup = () => setfourthPopupOpen(false);  
 
 
   const [countryCode, setCountryCode] = useState("+91");
@@ -75,6 +76,9 @@ const RideForm = () => {
   const handlePickup = () => {
     setIsForm1Visible(false);
     setIsForm2Visible(true);
+  };
+  const handleClear = () => {
+    setPickupTime({ date: '', time: '' });
   };
 
   useEffect(() => {
@@ -494,73 +498,80 @@ const RideForm = () => {
         </form>
         )}
 
-      {isForm2Visible && (
-        <form
-          onSubmit={handleSubmit}
-          className="lg:col-span-1 bg-white p-5 h-96 w-90 lg:order-1 ml-16 rounded-lg sm:order-2 shadow-lg sticky top-5 min-h-fit overflow-y-auto"
-        >
+{isForm2Visible && (
+      <form
+        onSubmit={handleSubmit}
+        className="lg:col-span-1 bg-white p-5 h-96 w-90 lg:order-1 ml-16 rounded-lg sm:order-2 shadow-lg sticky top-5 min-h-fit overflow-y-auto"
+      >
+        {/* Sticky Header and Buttons */}
+        <div className="relative">
           <IoClose
-            className="text-xl cursor-pointer"
+            className="text-xl cursor-pointer absolute top-2 right-2 z-10"
             onClick={closefourthPopup}
           />
-
-          {/* Sticky Header */}
-          <h2 className="text-xl font-bold mb-6 text-gray-700 sticky top-0 bg-white p-2 z-10">
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute top-2 right-14 bg-gray-200 text-gray-700 px-3 py-1 rounded z-10"
+          >
+            Clear
+          </button>
+          <h2 className="text-xl font-bold mb-4 text-gray-700 pt-8">
             When do you want to be picked up?
           </h2>
+        </div>
 
-          {/* Date Input */}
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Date</label>
-            <input
-              type="date"
-              value={pickupTime.date || ""}
-              onChange={(e) =>
-                setPickupTime({ ...pickupTime, date: e.target.value })
-              }
-              className="border border-gray-300 p-2 rounded w-full"
-            />
-          </div>
+        {/* Date Input */}
+        <div className="mb-3">
+          <label className="block text-gray-700 mb-1">Date</label>
+          <input
+            type="date"
+            value={pickupTime.date || ""}
+            onChange={(e) =>
+              setPickupTime({ ...pickupTime, date: e.target.value })
+            }
+            className="border border-gray-300 p-2 rounded w-full"
+          />
+        </div>
 
-          {/* Time Input */}
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Time</label>
-            <input
-              type="time"
-              value={pickupTime.time || ""}
-              onChange={(e) =>
-                setPickupTime({ ...pickupTime, time: e.target.value })
-              }
-              className="border border-gray-300 p-2 rounded w-full"
-            />
-          </div>
+        {/* Time Input */}
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-1">Time</label>
+          <input
+            type="time"
+            value={pickupTime.time || ""}
+            onChange={(e) =>
+              setPickupTime({ ...pickupTime, time: e.target.value })
+            }
+            className="border border-gray-300 p-2 rounded w-full"
+          />
+        </div>
 
-          {/* Info Section */}
-          <h1 className="border p-4 mb-6">
-            <BiSolidCalendarHeart className="inline-block mr-2" />
-            Choose your pickup time up to 90 days in advance
-          </h1>
+        {/* Info Section */}
+        <h1 className="border p-3 mb-4">
+          <BiSolidCalendarHeart className="inline-block mr-2" />
+          Choose your pickup time up to 90 days in advance
+        </h1>
 
-          <h1 className="border p-4 mb-6">
-            <GiSandsOfTime className="inline-block mr-2" />
-            Extra wait time included to meet your ride
-          </h1>
+        <h1 className="border p-3 mb-4">
+          <GiSandsOfTime className="inline-block mr-2" />
+          Extra wait time included to meet your ride
+        </h1>
 
-          <h1 className="border p-4 mb-6">
-            <TiCancel className="inline-block mr-2" />
-            Cancel at no charge up to 60 minutes in advance
-          </h1>
+        <h1 className="border p-3 mb-4">
+          <TiCancel className="inline-block mr-2" />
+          Cancel at no charge up to 60 minutes in advance
+        </h1>
 
-          {/* Sticky Button */}
-          <button
-            type="submit"
-            className="bg-black text-white text-s p-2 rounded w-full sticky bottom-0 mt-6 z-10"
-          >
-            Done
-          </button>
-        </form>
-      )}
-
+        {/* Sticky Button */}
+        <button
+          type="submit"
+          className="bg-black text-white text-s p-2 rounded w-full sticky bottom-0 mt-6 z-10"
+        >
+          Done
+        </button>
+      </form>
+    )}
 
 
 
