@@ -64,7 +64,7 @@ const Blog = () => {
           blogs.map((blog) => (
             <Link
               key={blog._id}
-              to={`/blogs/getallblogs/${blog._id}`}
+              to={`/more/blogs/${blog._id}`}
               className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden transform transition-all hover:-translate-y-2 duration-300"
             >
               <img

@@ -88,7 +88,7 @@ const AppRoutes = () => {
         { path: "more/how-godrive-works", element: <HowGodriveWorks /> },
         { path: "more/our-offerings", element: <Offerings /> },
         { path: "more/blog", element: <Blog /> },
-        {path: "blogs/getallblogs/:id", element: <article />}
+        {path: "more/blogs/:id", element: <article />}
       ],
     },
     {

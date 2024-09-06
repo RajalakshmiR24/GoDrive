@@ -78,6 +78,65 @@ const createDriver = asyncHandler(async (req, res) => {
   }
 });
 
+const getDriverById = async (req, res) => {
+  console.log(req.params, req.user);
+  
+  const userId = req.user._id; // Extract user ID from JWT
+
+  try {
+    const driver = await Driver.findOne({ user: userId }); // Find the driver by the associated user ID
+    if (!driver) {
+      return res.status(404).json({ message: 'Driver not found' });
+    }
+    res.status(200).json(driver);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching driver data', error: error.message });
+  }
+};
+
+
+const updateDriverProfile = async (req, res) => {
+  try {
+    const userId = req.user._id; // Extract user ID from JWT
+    const updatedData = req.body; // Get updated data from request body
+
+    // Find the driver by the associated user ID and update with new data
+    const updatedDriver = await Driver.findOneAndUpdate(
+      { user: userId },
+      {
+        firstName: updatedData.firstName,
+        lastName: updatedData.lastName,
+        phone: updatedData.phone,
+        email: updatedData.email,
+        licenseNumber: updatedData.licenseNumber,
+        vehicleMake: updatedData.vehicleMake,
+        vehicleModel: updatedData.vehicleModel,
+        vehicleYear: updatedData.vehicleYear,
+        vehicleRegistration: updatedData.vehicleRegistration,
+        insurancePolicy: updatedData.insurancePolicy,
+        drivingExperience: updatedData.drivingExperience,
+        accidents: updatedData.accidents,
+        trafficViolations: updatedData.trafficViolations,
+        verified: updatedData.verified, // Update verification status if necessary
+      },
+      { new: true } // Option to return the updated document
+    );
+
+    if (!updatedDriver) {
+      return res.status(404).json({ message: 'Driver not found' });
+    }
+
+    return res.status(200).json({
+      message: 'Driver profile updated successfully',
+      driver: updatedDriver,
+    });
+  } catch (error) {
+    console.error('Error updating driver profile:', error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
 
 const checkStatus = asyncHandler(async (req, res) => {
   try {
@@ -138,6 +197,8 @@ const checkVerificationStatus = asyncHandler(async (req, res) => {
 
 module.exports = {
   createDriver,
+  getDriverById,
+  updateDriverProfile,
   checkStatus,
   checkVerificationStatus,
 };
