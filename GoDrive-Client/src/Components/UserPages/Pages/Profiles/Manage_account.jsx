@@ -75,7 +75,7 @@ const AccountInfo = () => {
                   {authState.phoneNumber ? (
                   <FaCheckCircle className="ml-2 text-green-500" />
                 ) : (
-                  <FaExclamationTriangle className="ml-2 text-red-500" />
+                  <FaExclamationTriangle className="ml-2 text-yellow-500" />
                 )}
                 </p>
                
