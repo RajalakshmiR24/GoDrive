@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { FaGoogle, FaChevronRight } from 'react-icons/fa';
+import { FaGoogle, FaChevronRight,FaCheckCircle, FaExclamationTriangle  } from 'react-icons/fa';
+import { useAuth } from '../../../../Context/AuthContext'; 
+
 
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
@@ -19,16 +21,19 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 const AccountInfo = () => {
+  const { authState } = useAuth(); // Access the auth state
+
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [popupContent, setPopupContent] = useState("");
 
   const handleArrowClick = (content) => {
+    console.log(`Clicked to ${action}`);
     setPopupContent(content);
     setPopupVisible(true);
   };
 
   return (
-    <div className="flex flex-col bg-gray-100 sticky ">
+<div className="flex flex-col bg-gray-100 sticky ">
       <div className=" bg-white rounded-lg shadow-md">
         <div className="p-4">
           <div className="border-b border-gray-200 pb-4">
@@ -38,32 +43,60 @@ const AccountInfo = () => {
             <h3 className="text-lg font-medium">Basic Info</h3>
             <div className="flex items-center mt-4">
               <div className="h-12 w-12 bg-gray-200 rounded-full flex justify-center items-center">
-                <svg className="h-6 w-6 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="h-6 w-6 text-gray-500"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M24 24H0C0 18.939 2.217 15 6.024 15H17.975C21.783 15 24 18.939 24 24zM12 12C9.243 12 7 9.757 7 7C7 4.243 9.243 2 12 2C14.757 2 17 4.243 17 7C17 9.757 14.757 12 12 12z"></path>
                 </svg>
               </div>
               <div className="ml-4 flex-grow">
-                <p className="font-medium">R Rajalakshmi</p>
+                <p className="font-medium flex items-center">
+                  {authState.name ? authState.name : "Not Provided"}{" "}
+                  {authState.name && (
+                    <FaCheckCircle className="ml-2 text-green-500" />
+                  )}
+                </p>
               </div>
               <FaChevronRight
                 className="text-gray-500 cursor-pointer"
                 onClick={() => handleArrowClick("Edit Name")}
               />
             </div>
+            {/* Phone number */}
             <div className="flex items-center mt-4">
               <div className="flex-grow">
-                <label className="block text-sm font-medium text-gray-700">Phone number</label>
-                <p className="mt-1 text-gray-900">+918382809217</p>
+                <label className="block text-sm font-medium text-gray-700">
+                  Phone number
+                </label>
+                <p className="mt-1 text-gray-900 flex items-center">
+                  {authState.phoneNumber ? authState.phoneNumber : "Not Provided"}
+                  {authState.phoneNumber ? (
+                  <FaCheckCircle className="ml-2 text-green-500" />
+                ) : (
+                  <FaExclamationTriangle className="ml-2 text-red-500" />
+                )}
+                </p>
+               
               </div>
               <FaChevronRight
                 className="text-gray-500 cursor-pointer"
                 onClick={() => handleArrowClick("Edit Phone Number")}
               />
             </div>
+
             <div className="flex items-center mt-4">
               <div className="flex-grow">
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <p className="mt-1 text-gray-900">Not Provided</p>
+                <label className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <p className="mt-1 text-gray-900 flex items-center">
+                  {authState.email ? authState.email : "Not Provided"}{" "}
+                  {authState.email && (
+                    <FaCheckCircle className="ml-2 text-green-500" />
+                  )}
+                </p>
               </div>
               <FaChevronRight
                 className="text-gray-500 cursor-pointer"
