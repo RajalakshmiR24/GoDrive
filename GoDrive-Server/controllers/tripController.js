@@ -69,7 +69,11 @@ exports.createTrip = async (req, res) => {
     const savedTrip = await newTrip.save();
     res.status(201).json(savedTrip);
 
+
     console.log (savedTrip)
+
+    // console.log (savedTrip)
+
 
     // console.log (savedTrip)
 
