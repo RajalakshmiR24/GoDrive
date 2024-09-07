@@ -2,9 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { getGeocodeData } from "../../../Service/api";
 import api from "../../../Utils/axios";
 import FormField from "./FormComponent/FormField";
-import { FaClock,FaGooglePay,FaRupeeSign } from "react-icons/fa";
+import { FaClock, FaGooglePay, FaRupeeSign } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { RiUserAddFill, RiMapPinLine, RiPinDistanceFill,RiArrowDropDownLine } from "react-icons/ri";
+import {
+  RiUserAddFill,
+  RiMapPinLine,
+  RiPinDistanceFill,
+  RiArrowDropDownLine,
+} from "react-icons/ri";
 
 import { BiSolidCalendarHeart } from "react-icons/bi";
 import { GiSandsOfTime } from "react-icons/gi";
@@ -12,15 +17,15 @@ import { TiCancel } from "react-icons/ti";
 import { BsCashCoin } from "react-icons/bs";
 import { SiPhonepe } from "react-icons/si";
 
-import constants from '../../../Utils/constant';
+import constants from "../../../Utils/constant";
 
-// const HERE_API_KEY = "1GAoVaOcX3MUdbsw4qhCqJp6MnKlEPzVP-db90XTZDg";
+const HERE_API_KEY = "1GAoVaOcX3MUdbsw4qhCqJp6MnKlEPzVP-db90XTZDg";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyCVQw0r3rQJRv4Y9y8FZDwz7tWUM3_D2Q4";
+// const GOOGLE_MAPS_API_KEY = "AIzaSyCVQw0r3rQJRv4Y9y8FZDwz7tWUM3_D2Q4";
 
 const RideForm = () => {
   const [name, setName] = useState("");
-  const [userEmail,setUserEmail] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropLocation, setDropLocation] = useState("");
@@ -33,10 +38,9 @@ const RideForm = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isSecondPopupOpen, setIsSecondPopupOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [thirdPopupOpen,setThirdPopupOpen]=useState(false)
+  const [thirdPopupOpen, setThirdPopupOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(false);
-  const [location, setLocation] = useState({ lat: 13.0303, lng: 80.1696 });
-
+  
 
   const [isForm1Visible, setIsForm1Visible] = useState(true); // Default to true
   const [isForm2Visible, setIsForm2Visible] = useState(false);
@@ -45,19 +49,19 @@ const RideForm = () => {
   const [lastName, setLastName] = useState("");
 
   const mapRef = useRef(null);
-  const directionsService = useRef(null);
-  const directionsRenderer = useRef(null);
+  const routingRef = useRef(null);
 
   const togglePopup = () => setIsPopupOpen((prev) => !prev);
   const closePopup = () => setIsPopupOpen(false);
   const toggleSecondPopup = () => setIsSecondPopupOpen((prev) => !prev);
   const closeSecondPopup = () => setIsSecondPopupOpen(false);
-  const handleThirdPopup = () => { setThirdPopupOpen((prev) => !prev);};
+  const handleThirdPopup = () => {
+    setThirdPopupOpen((prev) => !prev);
+  };
   const closethirdPopup = () => setThirdPopupOpen(false);
-  const [fourthPopupOpen, setfourthPopupOpen] = useState(true);
+  // const [fourthPopupOpen, setfourthPopupOpen] = useState(true);
 
-  const closefourthPopup = () => setfourthPopupOpen(false);  
-
+  const closefourthPopup = () => setIsForm2Visible(true);
 
   const [countryCode, setCountryCode] = useState("+91");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -78,7 +82,7 @@ const RideForm = () => {
     setIsForm2Visible(true);
   };
   const handleClear = () => {
-    setPickupTime({ date: '', time: '' });
+    setPickupTime({ date: "", time: "" });
   };
 
   useEffect(() => {
@@ -105,129 +109,107 @@ const RideForm = () => {
     fetchUserDetails();
   }, []);
 
-  // useEffect(() => {
-  //   if (!mapRef.current) {
-  //     const platform = new H.service.Platform({ apikey: HERE_API_KEY });
-  //     const defaultLayers = platform.createDefaultLayers();
-
-  //     const mapElement = document.getElementById("map");
-  //     mapElement.style.width = "800px";
-  //     mapElement.style.height = "500px";
-  //     mapElement.style.position = "relative";
-  //     mapElement.style.overflow = "hidden";
-
-  //     mapRef.current = new H.Map(mapElement, defaultLayers.vector.normal.map, {
-  //       zoom: 12,
-  //       center: { lat: 13.0303, lng: 80.1696 },
-  //     });
-
-  //     const behavior = new H.mapevents.Behavior(
-  //       new H.mapevents.MapEvents(mapRef.current)
-  //     );
-  //     const ui = H.ui.UI.createDefault(mapRef.current, defaultLayers);
-
-  //     window.addEventListener("resize", () =>
-  //       mapRef.current.getViewPort().resize()
-  //     );
-  //   }
-  // }, []);
   useEffect(() => {
-    const initializeMap = () => {
-      if (window.google && window.google.maps) {
-        const map = new window.google.maps.Map(document.getElementById('map'), {
-          center: location,
-          zoom: 12,
-        });
-        mapRef.current = map;
-      }
-    };
+    if (!mapRef.current) {
+      const platform = new H.service.Platform({ apikey: HERE_API_KEY });
+      const defaultLayers = platform.createDefaultLayers();
 
-    if (!window.google || !window.google.maps) {
-      const interval = setInterval(() => {
-        if (window.google && window.google.maps) {
-          initializeMap();
-          clearInterval(interval);
-        }
-      }, 500);
-    } else {
-      initializeMap();
+      const mapElement = document.getElementById("map");
+      mapElement.style.width = "800px";
+      mapElement.style.height = "500px";
+      mapElement.style.position = "relative";
+      mapElement.style.overflow = "hidden";
+
+      mapRef.current = new H.Map(mapElement, defaultLayers.vector.normal.map, {
+        zoom: 12,
+        center: { lat: 13.0303, lng: 80.1696 },
+      });
+
+      const behavior = new H.mapevents.Behavior(
+        new H.mapevents.MapEvents(mapRef.current)
+      );
+      const ui = H.ui.UI.createDefault(mapRef.current, defaultLayers);
+
+      window.addEventListener("resize", () =>
+        mapRef.current.getViewPort().resize()
+      );
     }
-  }, [location]);
+  }, []);
+  
 
-  // useEffect(() => {
-  //   if (!mapRef.current) {
-  //     const map = new window.google.maps.Map(document.getElementById("map"), {
-  //       center: { lat: 13.0303, lng: 80.1696 },
-  //       zoom: 12,
-  //     });
+  useEffect(() => {
+    if (!mapRef.current) {
+      const map = new window.google.maps.Map(document.getElementById("map"), {
+        center: { lat: 13.0303, lng: 80.1696 },
+        zoom: 12,
+      });
 
-  //     mapRef.current = map;
-  //     directionsService.current = new window.google.maps.DirectionsService();
-  //     directionsRenderer.current = new window.google.maps.DirectionsRenderer();
+      mapRef.current = map;
+      directionsService.current = new window.google.maps.DirectionsService();
+      directionsRenderer.current = new window.google.maps.DirectionsRenderer();
 
-  //     directionsRenderer.current.setMap(mapRef.current);
-  //   }
-  // }, []);
-
-
-  // useEffect(() => {
-  //   if (pickupCoords && dropCoords && mapRef.current) {
-  //     if (routingRef.current) {
-  //       mapRef.current.removeObject(routingRef.current);
-  //     }
-
-  //     const platform = new H.service.Platform({ apikey: HERE_API_KEY });
-  //     const router = platform.getRoutingService();
-  //     const routeRequestParams = {
-  //       mode: "fastest;car",
-  //       representation: "display",
-  //       routeattributes: "summary",
-  //       maneuverattributes: "all",
-  //       waypoint0: `geo!${pickupCoords.lat},${pickupCoords.lng}`,
-  //       waypoint1: `geo!${dropCoords.lat},${dropCoords.lng}`,
-  //     };
-
-  //     router.calculateRoute(
-  //       routeRequestParams,
-  //       (result) => {
-  //         if (result.routes.length) {
-  //           const route = result.routes[0];
-  //           const routeLine = new H.map.Polyline(
-  //             new H.geo.LineString(route.sections[0].polyline),
-  //             { style: { strokeColor: "black", lineWidth: 5 } }
-  //           );
-
-  //           mapRef.current.addObject(routeLine);
-  //           mapRef.current
-  //             .getViewModel()
-  //             .setLookAtData({ bounds: routeLine.getBoundingBox() });
-  //           routingRef.current = routeLine;
-  //         }
-  //       },
-  //       (error) => {
-  //         console.error("Routing error:", error);
-  //       }
-  //     );
-  //   }
-  // }, [pickupCoords, dropCoords]);
+      directionsRenderer.current.setMap(mapRef.current);
+    }
+  }, []);
 
   useEffect(() => {
     if (pickupCoords && dropCoords && mapRef.current) {
-      const request = {
-        origin: new window.google.maps.LatLng(pickupCoords.lat, pickupCoords.lng),
-        destination: new window.google.maps.LatLng(dropCoords.lat, dropCoords.lng),
-        travelMode: window.google.maps.TravelMode.DRIVING,
+      if (routingRef.current) {
+        mapRef.current.removeObject(routingRef.current);
+      }
+  
+      const platform = new H.service.Platform({ apikey: HERE_API_KEY });
+      const router = platform.getRoutingService();
+  
+      const routeRequestParams = {
+        mode: "fastest;car",
+        representation: "display",
+        routeattributes: "summary",
+        maneuverattributes: "all",
+        waypoint0: `geo!${pickupCoords.lat},${pickupCoords.lng}`,
+        waypoint1: `geo!${dropCoords.lat},${dropCoords.lng}`,
       };
-
-      directionsService.current.route(request, (result, status) => {
-        if (status === window.google.maps.DirectionsStatus.OK) {
-          directionsRenderer.current.setDirections(result);
-        } else {
-          console.error("Error in routing:", status);
+  
+      router.calculateRoute(
+        routeRequestParams,
+        (result) => {
+          if (result.routes.length && result.routes[0].sections.length) {
+            const route = result.routes[0];
+            const lineString = new H.geo.LineString();
+  
+            // Loop through the route's polyline and add it to the lineString
+            route.sections.forEach((section) => {
+              section.polyline.forEach((point) => {
+                const parts = point.split(",");
+                lineString.pushLatLngAlt(parts[0], parts[1]);
+              });
+            });
+  
+            // Create the route line with proper style
+            const routeLine = new H.map.Polyline(lineString, {
+              style: { strokeColor: "black", lineWidth: 5 },
+            });
+  
+            // Add the route to the map
+            mapRef.current.addObject(routeLine);
+  
+            // Adjust the map to show the route
+            mapRef.current.getViewModel().setLookAtData({
+              bounds: routeLine.getBoundingBox(),
+            });
+  
+            routingRef.current = routeLine;
+          }
+        },
+        (error) => {
+          console.error("Routing error:", error);
         }
-      });
+      );
     }
   }, [pickupCoords, dropCoords]);
+  
+
+   
 
   const handleLocationChange = async (e, setter, setSuggestions) => {
     const value = e.target.value;
@@ -249,14 +231,11 @@ const RideForm = () => {
     setter(suggestion.display_name);
     setSuggestions([]);
 
-    // const coords = {
-    //   lat: suggestion.lat,
-    //   lng: suggestion.lon,
-    // };
     const coords = {
-      lat: parseFloat(suggestion.lat),
-      lng: parseFloat(suggestion.lon),
+      lat: suggestion.lat,
+      lng: suggestion.lon,
     };
+    
 
     if (setter === setPickupLocation) {
       setPickupCoords(coords);
@@ -264,15 +243,17 @@ const RideForm = () => {
       setDropCoords(coords);
     }
   };
-
+  const isSearchBtnDisabled=!pickupLocation|| !dropLocation|| !pickupTime || !forWhom
   const handleSearch = () => {
+
+    
     setShowForm(true); // Show the form when the search button is clicked
-    setLocation({ lat: 13.0827, lng: 80.2707 }); 
+    
   };
   const handlePaymentMethod = () => {
     setPaymentMethod((prev) => !prev);
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -376,7 +357,9 @@ const RideForm = () => {
                 <img src={constants.carimg1} alt="hgfhjj" />
               </div>
               <div>
-                <h3 className=" font-bold ml-2 text-black mr-2">Godrive Mini</h3>
+                <h3 className=" font-bold ml-2 text-black mr-2">
+                  Godrive Mini
+                </h3>
                 <h4 className="ml-2">Comfortable Mini Cabs</h4>
               </div>
               <h1 className="flex mt-5 ml-4  text-black font-bold ">
@@ -384,13 +367,16 @@ const RideForm = () => {
                 430
               </h1>
             </div>
-          </div> <div className="border border-black rounded-lg hover:shadow-lg mt-3 p-2  ">
+          </div>{" "}
+          <div className="border border-black rounded-lg hover:shadow-lg mt-3 p-2  ">
             <div className=" flex gap-2 ">
               <div className="w-24 ">
                 <img src={constants.auto6} alt="hgfhjj" />
               </div>
               <div>
-                <h3 className=" font-bold ml-6 text-black mr-2">Godrive Auto</h3>
+                <h3 className=" font-bold ml-6 text-black mr-2">
+                  Godrive Auto
+                </h3>
                 <h4 className="ml-6">Comfortable Drive auto</h4>
               </div>
               <h1 className="flex mt-5 ml-3 text-black font-bold ">
@@ -398,13 +384,16 @@ const RideForm = () => {
                 345
               </h1>
             </div>
-          </div> <div className="border border-black rounded-lg hover:shadow-lg mt-3 p-2  ">
+          </div>{" "}
+          <div className="border border-black rounded-lg hover:shadow-lg mt-3 p-2  ">
             <div className=" flex gap-2 ">
               <div className="w-28">
                 <img src={constants.bike7} alt="hgfhjj" />
               </div>
               <div>
-                <h3 className=" font-bold ml-2 text-black mr-2">Godrive BikeTaxi</h3>
+                <h3 className=" font-bold ml-2 text-black mr-2">
+                  Godrive BikeTaxi
+                </h3>
                 <h4 className="ml-2">Comfortable BikeTaxi</h4>
               </div>
               <h1 className="flex mt-5 ml-7  text-black font-bold ">
@@ -413,168 +402,174 @@ const RideForm = () => {
               </h1>
             </div>
           </div>
-
-
           <div className=" flex sticky bottom-0 p-3 hover:bg-white hover:shadow-lg border rounded-lg bg-gray-50">
             <div className="">
-              <button 
-              onClick={() => handleThirdPopup()} 
-              className="flex mt-3 ml-3 "> <BsCashCoin className="text-green-600 mt-1 mr-2" size={24} /> Cash<RiArrowDropDownLine className="" size={28} /></button>
+              <button
+                onClick={() => handleThirdPopup()}
+                className="flex mt-3 ml-3 "
+              >
+                {" "}
+                <BsCashCoin
+                  className="text-green-600 mt-1 mr-2"
+                  size={24}
+                />{" "}
+                Cash
+                <RiArrowDropDownLine className="" size={28} />
+              </button>
             </div>
-            <div><button className="text-white bg-black ml-24  rounded-lg px-10 py-3 font-semibold">Request</button></div>
+            <div>
+              <button className="text-white bg-black ml-24  rounded-lg px-10 py-3 font-semibold">
+                Request
+              </button>
+            </div>
           </div>
-
-
-
         </div>
-  {isForm1Visible && (
-
-        <form
-          className={`lg:col-span-1 bg-white p-5 mt-6 h-96  w-[350px] lg:order-1  rounded-lg sm:order-2 shadow-lg sticky top-5 min-h-fit ${
-            showForm ? "ml-10" : "ml-16"
-          }`}
-          onSubmit={handleSubmit}
-        >
-          <h2 className="text-xl font-bold mb-4 text-gray-700">Find a Trip</h2>
-          <FormField
-            label="Pickup location"
-            value={pickupLocation}
-            onChange={(e) =>
-              handleLocationChange(e, setPickupLocation, setPickupSuggestions)
-            }
-            suggestions={pickupSuggestions}
-            onSuggestionSelect={(suggestion) =>
-              handleSuggestionSelect(
-                suggestion,
-                setPickupLocation,
-                setPickupSuggestions
-              )
-            }
-            icon={<RiMapPinLine className="text-black" />}
-          />
-          <FormField
-            label="Drop off location"
-            value={dropLocation}
-            onChange={(e) =>
-              handleLocationChange(e, setDropLocation, setDropSuggestions)
-            }
-            suggestions={dropSuggestions}
-            onSuggestionSelect={(suggestion) =>
-              handleSuggestionSelect(
-                suggestion,
-                setDropLocation,
-                setDropSuggestions
-              )
-            }
-            icon={<RiPinDistanceFill className="text-black" />}
-          />
-
-<div className="flex flex-col gap-4">
-  <button
-    onClick={handlePickup}
-    className="w-full pl-3 pr-3 py-2 flex items-center gap-2 rounded-lg bg-gray-100 hover:bg-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-700 text-sm transition-all duration-200 ease-in-out"
-  >
-    <FaClock className="text-black" />
-    <span>{pickupTime}</span>
-  </button>
-
-  <button
-    onClick={togglePopup}
-    className="bg-gray-100 hover:bg-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black flex items-center gap-4 rounded-lg pl-2 pr-2 py-2 text-gray-700 text-sm transition-all duration-200 ease-in-out"
-  >
-    <RiUserAddFill className="text-black" />
-    <span>For me</span>
-    <RiArrowDropDownLine size={28} className="text-black" />
-  </button>
-</div>
-
-
-          <button
-            onClick={handleSearch}
-            className="bg-black text-white p-3 rounded-lg mt-4 w-full"
+        {isForm1Visible && (
+          <form
+            className={`lg:col-span-1 bg-white p-5 mt-6 h-96  w-[350px] lg:order-1  rounded-lg sm:order-2 shadow-lg sticky top-5 min-h-fit ${
+              showForm ? "ml-10" : "ml-16"
+            }`}
+            onSubmit={handleSubmit}
           >
-            Search
-          </button>
-        </form>
+            <h2 className="text-xl font-bold mb-4 text-gray-700">
+              Find a Trip
+            </h2>
+            <FormField
+              label="Pickup location"
+              value={pickupLocation}
+              onChange={(e) =>
+                handleLocationChange(e, setPickupLocation, setPickupSuggestions)
+              }
+              suggestions={pickupSuggestions}
+              onSuggestionSelect={(suggestion) =>
+                handleSuggestionSelect(
+                  suggestion,
+                  setPickupLocation,
+                  setPickupSuggestions
+                )
+              }
+              icon={<RiMapPinLine className="text-black" />}
+            />
+            <FormField
+              label="Drop off location"
+              value={dropLocation}
+              onChange={(e) =>
+                handleLocationChange(e, setDropLocation, setDropSuggestions)
+              }
+              suggestions={dropSuggestions}
+              onSuggestionSelect={(suggestion) =>
+                handleSuggestionSelect(
+                  suggestion,
+                  setDropLocation,
+                  setDropSuggestions
+                )
+              }
+              icon={<RiPinDistanceFill className="text-black" />}
+            />
+
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={handlePickup}
+                className="w-full pl-3 pr-3 py-2 flex items-center gap-2 rounded-lg bg-gray-100 hover:bg-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-700 text-sm transition-all duration-200 ease-in-out"
+              >
+                <FaClock className="text-black" />
+                <span>{pickupTime}</span>
+              </button>
+
+              <button
+                onClick={togglePopup}
+                className="bg-gray-100 hover:bg-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black flex items-center gap-4 rounded-lg pl-2 pr-2 py-2 text-gray-700 text-sm transition-all duration-200 ease-in-out"
+              >
+                <RiUserAddFill className="text-black" />
+                <span>For me</span>
+                <RiArrowDropDownLine size={28} className="text-black" />
+              </button>
+            </div>
+
+            <button
+              onClick={handleSearch}
+              className="bg-black text-white p-3 rounded-lg mt-4 w-full"
+            >
+              
+              Search
+            </button>
+          </form>
         )}
 
-{isForm2Visible && (
-      <form
-        onSubmit={handleSubmit}
-        className="lg:col-span-1 bg-white p-5 h-96 w-90 lg:order-1 ml-16 rounded-lg sm:order-2 shadow-lg sticky top-5 min-h-fit overflow-y-auto"
-      >
-        {/* Sticky Header and Buttons */}
-        <div className="relative">
-          <IoClose
-            className="text-xl cursor-pointer absolute top-2 right-2 z-10"
-            onClick={closefourthPopup}
-          />
-          <button
-            type="button"
-            onClick={handleClear}
-            className="absolute top-2 right-14 bg-gray-200 text-gray-700 px-3 py-1 rounded z-10"
+        {isForm2Visible && (
+          <form
+            onSubmit={handleSubmit}
+            className="lg:col-span-1 bg-white p-5 h-96 w-90 lg:order-1 ml-16 rounded-lg sm:order-2 shadow-lg sticky top-5 min-h-fit overflow-y-auto"
           >
-            Clear
-          </button>
-          <h2 className="text-xl font-bold mb-4 text-gray-700 pt-8">
-            When do you want to be picked up?
-          </h2>
-        </div>
+            {/* Sticky Header and Buttons */}
+            <div className="relative">
+              <IoClose
+                className="text-xl cursor-pointer absolute top-2 right-2 z-10"
+                onClick={() => closefourthPopup()}
+              />
+              <button
+                type="button"
+                onClick={handleClear}
+                className="absolute top-2 right-14 bg-gray-200 text-gray-700 px-3 py-1 rounded z-10"
+              >
+                Clear
+              </button>
+              <h2 className="text-xl font-bold mb-4 text-gray-700 pt-8">
+                When do you want to be picked up?
+              </h2>
+            </div>
 
-        {/* Date Input */}
-        <div className="mb-3">
-          <label className="block text-gray-700 mb-1">Date</label>
-          <input
-            type="date"
-            value={pickupTime.date || ""}
-            onChange={(e) =>
-              setPickupTime({ ...pickupTime, date: e.target.value })
-            }
-            className="border border-gray-300 p-2 rounded w-full"
-          />
-        </div>
+            {/* Date Input */}
+            <div className="mb-3">
+              <label className="block text-gray-700 mb-1">Date</label>
+              <input
+                type="date"
+                value={pickupTime.date || ""}
+                onChange={(e) =>
+                  setPickupTime({ ...pickupTime, date: e.target.value })
+                }
+                className="border border-gray-300 p-2 rounded w-full"
+              />
+            </div>
 
-        {/* Time Input */}
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-1">Time</label>
-          <input
-            type="time"
-            value={pickupTime.time || ""}
-            onChange={(e) =>
-              setPickupTime({ ...pickupTime, time: e.target.value })
-            }
-            className="border border-gray-300 p-2 rounded w-full"
-          />
-        </div>
+            {/* Time Input */}
+            <div className="mb-4">
+              <label className="block text-gray-700 mb-1">Time</label>
+              <input
+                type="time"
+                value={pickupTime.time || ""}
+                onChange={(e) =>
+                  setPickupTime({ ...pickupTime, time: e.target.value })
+                }
+                className="border border-gray-300 p-2 rounded w-full"
+              />
+            </div>
 
-        {/* Info Section */}
-        <h1 className="border p-3 mb-4">
-          <BiSolidCalendarHeart className="inline-block mr-2" />
-          Choose your pickup time up to 90 days in advance
-        </h1>
+            {/* Info Section */}
+            <h1 className="border p-3 mb-4">
+              <BiSolidCalendarHeart className="inline-block mr-2" />
+              Choose your pickup time up to 90 days in advance
+            </h1>
 
-        <h1 className="border p-3 mb-4">
-          <GiSandsOfTime className="inline-block mr-2" />
-          Extra wait time included to meet your ride
-        </h1>
+            <h1 className="border p-3 mb-4">
+              <GiSandsOfTime className="inline-block mr-2" />
+              Extra wait time included to meet your ride
+            </h1>
 
-        <h1 className="border p-3 mb-4">
-          <TiCancel className="inline-block mr-2" />
-          Cancel at no charge up to 60 minutes in advance
-        </h1>
+            <h1 className="border p-3 mb-4">
+              <TiCancel className="inline-block mr-2" />
+              Cancel at no charge up to 60 minutes in advance
+            </h1>
 
-        {/* Sticky Button */}
-        <button
-          type="submit"
-          className="bg-black text-white text-s p-2 rounded w-full sticky bottom-0 mt-6 z-10"
-        >
-          Done
-        </button>
-      </form>
-    )}
-
-
-
+            {/* Sticky Button */}
+            <button
+              type="submit"
+              className="bg-black text-white text-s p-2 rounded w-full sticky bottom-0 mt-6 z-10"
+            >
+              Done
+            </button>
+          </form>
+        )}
       </div>
 
       {/* Popup for "For Me" */}
@@ -762,7 +757,6 @@ const RideForm = () => {
           </div>
         </div>
       )}
-      
     </div>
   );
 };

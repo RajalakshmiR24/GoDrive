@@ -68,7 +68,11 @@ exports.createTrip = async (req, res) => {
 
     const savedTrip = await newTrip.save();
     res.status(201).json(savedTrip);
+<<<<<<< HEAD
+    console.log (savedTrip)
+=======
     // console.log (savedTrip)
+>>>>>>> 5fea8e7fa47cac63735c493140cf2dbceb1cdc5c
   } catch (error) {
     console.error('Error creating trip:', error);
     res.status(500).json({ message: 'Server error', error: error.stack });
