@@ -4,7 +4,6 @@ import 'leaflet/dist/leaflet.css';
 function MapComponent() {
   const map = useMap();
   
-  // You can use `map` here to interact with the map instance
   return null;
 }
 

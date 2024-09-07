@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import BackButton from '../Common/BackButton'; // Adjust the path based on your file structure
 
 function Notifications() {
   const [notifications, setNotifications] = useState([]);
@@ -29,6 +30,7 @@ function Notifications() {
 
   return (
     <div>
+      <BackButton /> {/* Add BackButton component */}
       {error && <p>Error: {error}</p>}
       {notifications.length > 0 ? (
         <ul>

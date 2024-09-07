@@ -1,4 +1,6 @@
 const Trip = require('../models/trip');
+const DriverRide = require('../models/driverRide');
+const crypto = require('crypto');
 const { getGeocodeData } = require('../Services/apiServices');
 const haversineDistance = require('../utils/distanceCalculator');
 
@@ -66,7 +68,11 @@ exports.createTrip = async (req, res) => {
 
     const savedTrip = await newTrip.save();
     res.status(201).json(savedTrip);
+<<<<<<< HEAD
     console.log (savedTrip)
+=======
+    // console.log (savedTrip)
+>>>>>>> 5fea8e7fa47cac63735c493140cf2dbceb1cdc5c
   } catch (error) {
     console.error('Error creating trip:', error);
     res.status(500).json({ message: 'Server error', error: error.stack });
@@ -88,9 +94,32 @@ exports.getAllTrips = async (req, res) => {
 
 
 // Get a specific trip
-exports.getTripById = (req, res) => {
-  res.json(res.trip);
+exports.getTripById = async (req, res) => {
+  try {
+    const { tripId } = req.params;
+
+    // Debug: Log the received tripId
+    // console.log('Fetching trip with ID:', tripId);
+
+    const trip = await Trip.findById(tripId).populate('user');
+
+    if (!trip) {
+      // Debug: Log if trip is not found
+      // console.log('Trip not found with ID:', tripId);
+      return res.status(404).json({ message: 'Trip not found' });
+    }
+
+    // Debug: Log the trip data
+    // console.log('Trip data:', trip);
+
+    return res.status(200).json(trip);
+  } catch (error) {
+    // Debug: Log the error
+    console.error('Error fetching trip:', error);
+    res.status(500).json({ message: 'Error fetching trip', error: error.stack });
+  }
 };
+
 
 // Middleware to get trip by ID
 exports.getTripByIdMiddleware = async (req, res, next) => {
@@ -135,5 +164,88 @@ exports.updateTrip = async (req, res) => {
   }
 };
 
+// / Driver accepts the trip
+exports.acceptTrip = async (req, res) => {
+  try {
+    const { tripId } = req.params;
 
+    // Log the req.user to ensure it's defined
+    console.log('Authenticated User:', req.user);
 
+    // Check if req.user is populated
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: 'Driver not authenticated' });
+    }
+
+    const driver = req.user._id; // Assuming the driver is authenticated
+
+    console.log('Driver:', driver, 'is accepting Trip:', tripId);
+
+    // Find the trip
+    const trip = await Trip.findById(tripId);
+    if (!trip) {
+      console.log('Trip not found with ID:', tripId);
+      return res.status(404).json({ message: 'Trip not found' });
+    }
+
+    // Generate a random 6-digit OTP
+    const otp = crypto.randomBytes(3).toString('hex').toUpperCase();
+    console.log('Generated OTP:', otp);
+
+    // Update the trip with OTP and status to 'Accepted'
+    trip.otp = otp;
+    trip.status = 'Accepted';
+    await trip.save();
+    console.log('Updated Trip:', trip);
+
+    // Create a new driver ride
+    const driverRide = new DriverRide({
+      trip: trip._id,
+      driver,
+      pin: otp,
+      status: 'Accepted',
+    });
+    await driverRide.save();
+    console.log('Driver Ride created:', driverRide);
+
+    return res.status(200).json({ message: 'Trip accepted by driver', trip, driverRide });
+  } catch (error) {
+    console.error('Error accepting trip:', error);
+    res.status(500).json({ message: 'Error accepting trip', error: error.stack });
+  }
+};
+
+// / Driver reject the trip
+
+exports.rejectTrip = async (req, res) => {
+  try {
+    const { tripId } = req.params;
+    const { reason } = req.body;
+    const driver = req.user._id; // Assuming the driver is authenticated
+
+    // Debug: Log the driver and trip information
+    // console.log('Driver:', driver, 'is rejecting Trip:', tripId);
+
+    // Find the trip
+    const trip = await Trip.findById(tripId);
+    if (!trip) {
+      // Debug: Log if the trip is not found
+      // console.log('Trip not found with ID:', tripId);
+      return res.status(404).json({ message: 'Trip not found' });
+    }
+
+    // Update the trip status to 'Rejected' and add the reason
+    trip.status = 'Rejected';
+    trip.rejectionReason = reason;
+    await trip.save();
+
+    // Debug: Log the trip rejection
+    // console.log('Trip rejected:', trip);
+
+    return res.status(200).json({ message: 'Trip rejected successfully', trip });
+  } catch (error) {
+    // Debug: Log the error
+    console.error('Error rejecting trip:', error);
+    res.status(500).json({ message: 'Error rejecting trip', error: error.stack });
+  }
+};

@@ -32,7 +32,7 @@ const OffDutyPage = () => {
     // Fetch earnings from API
     const fetchEarnings = async () => {
       try {
-        const response = await api.get('/earnings'); // Adjust the endpoint as needed
+        const response = await api.get('/earnings/get-earnings'); // Adjust the endpoint as needed
         setEarnings(response.data);
       } catch (error) {
         console.error("Error fetching earnings data:", error);
