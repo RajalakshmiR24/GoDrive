@@ -94,6 +94,18 @@ const getDriverById = async (req, res) => {
   }
 };
 
+const getDrivers = async (req, res) => {
+  try {
+    const drivers = await Driver.find(); // Find all drivers in the database
+    if (!drivers || drivers.length === 0) {
+      return res.status(404).json({ message: 'No drivers found' });
+    }
+    res.status(200).json(drivers); // Return the list of drivers
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching drivers data', error: error.message });
+  }
+};
+
 
 const updateDriverProfile = async (req, res) => {
   try {
@@ -198,6 +210,7 @@ const checkVerificationStatus = asyncHandler(async (req, res) => {
 module.exports = {
   createDriver,
   getDriverById,
+  getDrivers,
   updateDriverProfile,
   checkStatus,
   checkVerificationStatus,

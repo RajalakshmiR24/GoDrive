@@ -5,9 +5,11 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const driverRoutes = require('./routes/driverRoutes');
 const tripsRouter = require('./routes/tripRoutes');
-const tripListRouter = require("./routes/tripListRouter");  
 const accessRoutes = require('./routes/accessRoutes'); 
 const blogsRouter = require('./routes/blogsroutes');
+const earningsRoutes = require('./routes/earningsRoutes');
+const driverRideRoutes = require('./routes/driverRideRoutes');
+
 
 const cors = require('cors');
 
@@ -26,11 +28,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/drivers', driverRoutes);
 
-app.use('/api/trip-list', tripListRouter);
 app.use('/api/trips', tripsRouter); 
 
 app.use('/api/access-control', accessRoutes);
 app.use('/api/blogs', blogsRouter);
+app.use('/api/earnings', earningsRoutes);
+
+app.use('/api/ride', driverRideRoutes)
 
 
 const PORT = process.env.PORT || 5000;
