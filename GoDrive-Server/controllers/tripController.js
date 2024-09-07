@@ -21,6 +21,7 @@ const calculateDistance = async (pickupLocation, dropLocation) => {
     const dropLon = parseFloat(dropData[0].lon);
 
     return haversineDistance(pickupLat, pickupLon, dropLat, dropLon);
+    
   } catch (error) {
     console.error('Error calculating distance:', error);
     throw error;
@@ -40,27 +41,14 @@ exports.createTrip = async (req, res) => {
 
     // Calculate distance (in km)
     const distance = await calculateDistance(pickupLocation, dropLocation);
-    const price = distance * PRICE_PER_KM;
-
-    // Debug: Log the trip data before saving
-  //   console.log('Trip data to be saved:', {
-  //     pickupLocation,
-  //     dropLocation,
-  //     pickupTime,
-  //     forWhom,
-  //     user: userId, // Ensure userId is passed correctly
-  //     name,
-  //     distance,
-  //     price,
-  //   }
-  // );
+    const price = Math.round(distance * PRICE_PER_KM);
 
     const newTrip = new Trip({
       pickupLocation,
       dropLocation,
       pickupTime,
       forWhom,
-      user: userId, // Ensure correct mapping here
+      user: userId, 
       name,
       distance,
       price,
@@ -69,13 +57,7 @@ exports.createTrip = async (req, res) => {
     const savedTrip = await newTrip.save();
     res.status(201).json(savedTrip);
 
-
     console.log (savedTrip)
-
-    // console.log (savedTrip)
-
-
-    // console.log (savedTrip)
 
   } catch (error) {
     console.error('Error creating trip:', error);

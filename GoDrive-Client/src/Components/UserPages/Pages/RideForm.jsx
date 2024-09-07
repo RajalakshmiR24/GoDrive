@@ -39,8 +39,8 @@ const RideForm = () => {
   const [isSecondPopupOpen, setIsSecondPopupOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [thirdPopupOpen, setThirdPopupOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState(false);
-  
+  const [selectedPayment, setSelectedPayment] = useState("");
+  const [tempPayment, setTempPayment] = useState("");
 
   const [isForm1Visible, setIsForm1Visible] = useState(true); // Default to true
   const [isForm2Visible, setIsForm2Visible] = useState(false);
@@ -55,10 +55,8 @@ const RideForm = () => {
   const closePopup = () => setIsPopupOpen(false);
   const toggleSecondPopup = () => setIsSecondPopupOpen((prev) => !prev);
   const closeSecondPopup = () => setIsSecondPopupOpen(false);
-  const handleThirdPopup = () => {
-    setThirdPopupOpen((prev) => !prev);
-  };
-  const closethirdPopup = () => setThirdPopupOpen(false);
+
+ 
   // const [fourthPopupOpen, setfourthPopupOpen] = useState(true);
 
   const closefourthPopup = () => setIsForm2Visible(true);
@@ -135,7 +133,6 @@ const RideForm = () => {
       );
     }
   }, []);
-  
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -157,10 +154,10 @@ const RideForm = () => {
       if (routingRef.current) {
         mapRef.current.removeObject(routingRef.current);
       }
-  
+
       const platform = new H.service.Platform({ apikey: HERE_API_KEY });
       const router = platform.getRoutingService();
-  
+
       const routeRequestParams = {
         mode: "fastest;car",
         representation: "display",
@@ -169,14 +166,14 @@ const RideForm = () => {
         waypoint0: `geo!${pickupCoords.lat},${pickupCoords.lng}`,
         waypoint1: `geo!${dropCoords.lat},${dropCoords.lng}`,
       };
-  
+
       router.calculateRoute(
         routeRequestParams,
         (result) => {
           if (result.routes.length && result.routes[0].sections.length) {
             const route = result.routes[0];
             const lineString = new H.geo.LineString();
-  
+
             // Loop through the route's polyline and add it to the lineString
             route.sections.forEach((section) => {
               section.polyline.forEach((point) => {
@@ -184,20 +181,20 @@ const RideForm = () => {
                 lineString.pushLatLngAlt(parts[0], parts[1]);
               });
             });
-  
+
             // Create the route line with proper style
             const routeLine = new H.map.Polyline(lineString, {
               style: { strokeColor: "black", lineWidth: 5 },
             });
-  
+
             // Add the route to the map
             mapRef.current.addObject(routeLine);
-  
+
             // Adjust the map to show the route
             mapRef.current.getViewModel().setLookAtData({
               bounds: routeLine.getBoundingBox(),
             });
-  
+
             routingRef.current = routeLine;
           }
         },
@@ -207,9 +204,6 @@ const RideForm = () => {
       );
     }
   }, [pickupCoords, dropCoords]);
-  
-
-   
 
   const handleLocationChange = async (e, setter, setSuggestions) => {
     const value = e.target.value;
@@ -235,7 +229,6 @@ const RideForm = () => {
       lat: suggestion.lat,
       lng: suggestion.lon,
     };
-    
 
     if (setter === setPickupLocation) {
       setPickupCoords(coords);
@@ -243,16 +236,28 @@ const RideForm = () => {
       setDropCoords(coords);
     }
   };
-  const isSearchBtnDisabled=!pickupLocation|| !dropLocation|| !pickupTime || !forWhom
+  const isSearchBtnDisabled =
+    !pickupLocation || !dropLocation || !pickupTime || !forWhom;
   const handleSearch = () => {
-
-    
-    setShowForm(true); // Show the form when the search button is clicked
-    
+    if (!isSearchBtnDisabled) {
+      setShowForm(true); // Show the form when the search button is clicked
+    }
+  };
+  const handleThirdPopup = () => {
+    // setThirdPopupOpen((prev) => !prev);
+    setThirdPopupOpen(!thirdPopupOpen);
+  };
+  const handlePaymentChange = (event) => {
+    setTempPayment(event.target.value);
   };
   const handlePaymentMethod = () => {
-    setPaymentMethod((prev) => !prev);
+    if (tempPayment) {
+      setSelectedPayment(tempPayment); // Update the main payment method
+    }
+    setThirdPopupOpen(false); // Close the popup after selecting
   };
+  const closethirdPopup = () => setThirdPopupOpen(false);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -402,23 +407,52 @@ const RideForm = () => {
               </h1>
             </div>
           </div>
-          <div className=" flex sticky bottom-0 p-3 hover:bg-white hover:shadow-lg border rounded-lg bg-gray-50">
-            <div className="">
+          <div className=" flex items-center justify-between sticky bottom-0 p-3 hover:bg-white hover:shadow-lg border rounded-lg bg-gray-50">
+            <div className="ml-3">
               <button
                 onClick={() => handleThirdPopup()}
-                className="flex mt-3 ml-3 "
+                className="flex mt-3 "
               >
-                {" "}
-                <BsCashCoin
-                  className="text-green-600 mt-1 mr-2"
-                  size={24}
-                />{" "}
-                Cash
-                <RiArrowDropDownLine className="" size={28} />
+                {selectedPayment ? (
+                  <>
+                    {/* Icon and selected payment */}
+                    {selectedPayment === "GooglePay" && (
+                      <FaGooglePay
+                        className="text-red-600 mt-1 mr-2"
+                        size={24}
+                      />
+                    )}
+                    {selectedPayment === "PhonePay" && (
+                      <SiPhonepe
+                        className="text-violet-800 mt-1 mr-2"
+                        size={24}
+                      />
+                    )}
+                    {selectedPayment === "Cash" && (
+                      <BsCashCoin
+                        className="text-green-600 mt-1 mr-2"
+                        size={24}
+                      />
+                    )}
+
+                    {/* Selected Payment Name */}
+                    {selectedPayment}
+                  </>
+                ) : (
+                  <>
+                    {/* Default to Cash when no payment is selected */}
+                    <BsCashCoin
+                      className="text-green-600 mt-1 mr-2"
+                      size={24}
+                    />
+                    Cash
+                  </>
+                )}
+                <RiArrowDropDownLine size={28} />
               </button>
             </div>
             <div>
-              <button className="text-white bg-black ml-24  rounded-lg px-10 py-3 font-semibold">
+              <button className="text-white bg-black mr-2 rounded-lg px-10 py-3 font-semibold">
                 Request
               </button>
             </div>
@@ -473,24 +507,33 @@ const RideForm = () => {
                 className="w-full pl-3 pr-3 py-2 flex items-center gap-2 rounded-lg bg-gray-100 hover:bg-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-gray-700 text-sm transition-all duration-200 ease-in-out"
               >
                 <FaClock className="text-black" />
-                <span>{pickupTime}</span>
+                <span className="font-semibold text-black">{pickupTime}</span>
               </button>
 
               <button
                 onClick={togglePopup}
-                className="bg-gray-100 hover:bg-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black flex items-center gap-4 rounded-lg pl-2 pr-2 py-2 text-gray-700 text-sm transition-all duration-200 ease-in-out"
+                className="bg-gray-100 hover:bg-gray-200 shadow-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black w-fit flex items-center gap-4 rounded-lg pl-2 pr-2 py-1 text-gray-700 text-sm transition-all duration-200 ease-in-out"
               >
                 <RiUserAddFill className="text-black" />
-                <span>For me</span>
+                <span className="font-semibold text-black">For me</span>
                 <RiArrowDropDownLine size={28} className="text-black" />
               </button>
             </div>
 
             <button
               onClick={handleSearch}
-              className="bg-black text-white p-3 rounded-lg mt-4 w-full"
+              className={`p-3 rounded-lg mt-4 w-full ${
+                isSearchBtnDisabled
+                  ? "bg-gray-400 opacity-50 cursor-not-allowed"
+                  : "bg-black text-white"
+              }`}
+              disabled={isSearchBtnDisabled} // Button is disabled if fields are missing
+              style={{
+                pointerEvents: isSearchBtnDisabled
+                  ? "opacity-50 cursor-not-allowed"
+                  : "auto",
+              }} // Prevent further mouse events after valid click
             >
-              
               Search
             </button>
           </form>
@@ -706,16 +749,17 @@ const RideForm = () => {
             <label className="flex items-center">
               <div
                 for="Googlepay"
-                className="flex justify-between  hover:bg-gray-100 w-full items-center border shadow-lg rounded-lg p-4"
+                className="flex justify-between  hover:bg-gray-100 w-full items-center border shadow-lg rounded-lg py-3 pr-4"
               >
-                <FaGooglePay className="text-red-600 mt-1 mr-2" size={28} />
-                <span className="mr-40"> Google Pay</span>
+                <FaGooglePay className="text-red-600 mt-1  w-32 h-8 "  />
+                <span className="mr-44 "> GooglePay</span>
 
                 <input
-                  id="Googlepay"
+                  
                   type="radio"
                   name="paymentMethod"
-                  value="cash"
+                  value="GooglePay"
+                  onChange={handlePaymentChange}
                   className="ml-4"
                 />
               </div>
@@ -723,12 +767,13 @@ const RideForm = () => {
             <label className="flex items-center">
               <div className="flex justify-between mt-3 hover:bg-gray- w-full items-center border shadow-lg rounded-lg p-4">
                 <SiPhonepe className="text-violet-800 mt-1 mr-2" size={24} />
-                <span className="mr-40">Phone Pay</span>
+                <span className="mr-44">PhonePay</span>
 
                 <input
                   type="radio"
                   name="paymentMethod"
-                  value="cash"
+                  value="PhonePay"
+                  onChange={handlePaymentChange}
                   className="ml-4"
                 />
               </div>
@@ -736,19 +781,20 @@ const RideForm = () => {
             <label className="flex items-center">
               <div className="flex justify-between mt-3 hover:bg-gray-100 w-full items-center border shadow-lg rounded-lg p-4">
                 <BsCashCoin className="text-green-600 mt-1 mr-2" size={24} />
-                <span className="mr-[200px]  ">Cash</span>
+                <span className="mr-[212px]  ">Cash</span>
 
                 <input
                   type="radio"
                   name="paymentMethod"
-                  value="cash"
+                  value="Cash"
+                  onChange={handlePaymentChange}
                   className="ml-4"
                 />
               </div>
             </label>
             <div className="w-full flex justify-center">
               <button
-                onSubmit={handlePaymentMethod}
+                onClick={handlePaymentMethod}
                 className="rounded-lg p-2 px-8 mt-10  shadow-lg text-white bg-black"
               >
                 Done

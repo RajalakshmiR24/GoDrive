@@ -31,6 +31,10 @@ const tripSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  distance:{
+    type:Number,
+    required:true,
+  },
   price: {
     type: Number,
     required: true,
@@ -45,7 +49,8 @@ const tripSchema = new mongoose.Schema({
     type: String,
     default: null, // OTP will be generated when the driver accepts the ride
   },
-  
+
 });
+
 
 module.exports = mongoose.model('Trip', tripSchema);
