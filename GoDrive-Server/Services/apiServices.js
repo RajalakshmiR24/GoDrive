@@ -1,42 +1,44 @@
-
 const axios = require('axios');
 
-// Google Maps API base URLs
-const GOOGLE_MAPS_GEOCODING_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
-const GOOGLE_MAPS_DIRECTIONS_URL = 'https://maps.googleapis.com/maps/api/directions/json';
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY; // Using environment variable for API key
+// Nominatim API base URL
+const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 
-// Function to get geocode data using Google Maps Geocoding API
-const getGeocodeData = async (address) => {
+// OpenRouteService API configuration
+const ORS_BASE_URL = 'https://api.openrouteservice.org/v2/directions/driving-car';
+const ORS_API_KEY = '5b3ce3597851110001cf62481d76d1fb63974536a702d0763fb5c285'; // Your ORS API key
+
+// Function to get geocode data using Nominatim
+const getGeocodeData = async (query) => {
   try {
-    const response = await axios.get(GOOGLE_MAPS_GEOCODING_URL, {
+    const response = await axios.get(`${NOMINATIM_BASE_URL}/search`, {
       params: {
-        address,
-        key: GOOGLE_API_KEY,
+        q: query,
+        format: 'json',
+        addressdetails: 1,
+        limit: 3, // Limit the number of suggestions
       },
     });
     return response.data;
   } catch (error) {
     console.error('Error fetching geocode data:', error);
-    throw new Error('Failed to fetch geocode data');
+    throw error;
   }
 };
 
-// Function to get route data using Google Maps Directions API
-const getRouteData = async (origin, destination) => {
+// Function to get route data using OpenRouteService
+const getRouteData = async (start, end) => {
   try {
-    const response = await axios.get(GOOGLE_MAPS_DIRECTIONS_URL, {
+    const response = await axios.get(`${ORS_BASE_URL}/geojson`, {
       params: {
-        origin,
-        destination,
-        key: GOOGLE_API_KEY,
-        mode: 'driving', // You can change this to 'walking', 'bicycling', etc.
+        start,
+        end,
+        api_key: ORS_API_KEY,
       },
     });
     return response.data;
   } catch (error) {
     console.error('Error fetching route data:', error);
-    throw new Error('Failed to fetch route data');
+    throw error;
   }
 };
 

@@ -28,7 +28,7 @@ const InputField = ({ type, value, onChange, options, placeholder = '', suggesti
           />
           {/* Render suggestions if provided */}
           {suggestions.length > 0 && (
-            <ul className="absolute left-0 right-0 z-10 bg-gray-100 border border-gray-300 mt-2 rounded-md shadow-lg max-h-40 overflow-y-auto">
+            <ul className="absolute left-0  right-0 z-10 bg-gray-100 border border-gray-300 mt-52 rounded-md shadow-lg max-h-40 overflow-y-auto">
               {suggestions.map((suggestion, index) => (
                 <li
                   key={index}

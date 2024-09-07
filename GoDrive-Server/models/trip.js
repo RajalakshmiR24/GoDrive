@@ -31,6 +31,15 @@ const tripSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  price:{
+    type:Number,
+    required:true,
+  }, 
+  distance:{
+    type:Number,
+
+  },
+  
 });
 
 module.exports = mongoose.model('Trip', tripSchema);

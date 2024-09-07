@@ -66,6 +66,7 @@ exports.createTrip = async (req, res) => {
 
     const savedTrip = await newTrip.save();
     res.status(201).json(savedTrip);
+    console.log (savedTrip)
   } catch (error) {
     console.error('Error creating trip:', error);
     res.status(500).json({ message: 'Server error', error: error.stack });
@@ -77,11 +78,14 @@ exports.getAllTrips = async (req, res) => {
   try {
     const trips = await Trip.find({});
     res.json(trips);
+    console.log(trips)
   } catch (error) {
     console.error('Error fetching trips:', error);
     res.status(500).json({ message: error.message });
   }
+
 };
+
 
 // Get a specific trip
 exports.getTripById = (req, res) => {
