@@ -31,6 +31,21 @@ const tripSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  price: {
+    type: Number,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ['Requested', 'Accepted', 'In-Progress', 'Completed', 'Cancelled'],
+    default: 'Requested',
+    required: true,
+  },
+  otp: {
+    type: String,
+    default: null, // OTP will be generated when the driver accepts the ride
+  },
+  
 });
 
 module.exports = mongoose.model('Trip', tripSchema);
