@@ -106,7 +106,7 @@ const AppRoutes = () => {
         { path: "profile", element: <Profile /> },
         { path: "settings", element: <AdminSettings /> },
         { path: "user-details", element: <UserDetails /> },
-        { path: "driver-details", element: <DriverDetails /> },
+        { path: "driver-details/:driverId", element: <DriverDetails /> },
       ],
     },
     {

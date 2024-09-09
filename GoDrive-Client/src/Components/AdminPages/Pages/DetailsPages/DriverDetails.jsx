@@ -1,146 +1,63 @@
-import React, { useState } from 'react';
-import { AiOutlineDelete } from "react-icons/ai";
-import { CiEdit } from "react-icons/ci";
-
-const AccountInfo = () => {
-  return (
-    <div className="bg-white rounded-lg shadow-md p-4">
-      <table className="min-w-full text-sm text-left text-gray-500">
-        <thead className="bg-gray-100">
-          <tr>
-            {['Trip ID', 'Date', 'Time', 'Customer ID', 'Customer Name', 'Actions'].map((header) => (
-              <th key={header} className="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider">{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="hover:bg-gray-50">
-            <td className='px-6 py-4'>#505524082</td>
-            <td className='px-6 py-4'>7-5-24</td>
-            <td className='px-6 py-4'>9:45pm</td>
-            <td className='px-6 py-4'>#55995151</td>
-            <td className='px-6 py-4'>Balaji</td>
-            <td className='px-6 py-4'>
-              <button className="text-white bg-green-600 px-3 py-1 rounded-md hover:bg-green-700">
-                View
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-const Security = () => {
-  return (
-    <div className="bg-white rounded-lg shadow-md p-4">
-      <div className='mb-6'>
-        <h1 className='font-medium text-lg'>Indian Bank</h1>
-        <div className='flex justify-between border-b pb-4'>
-          <div className='text-sm'>
-            <h1 className='font-semibold'>Parthiban</h1>
-            <p>25, Annai Sathya Nagar</p>
-            <p>Poodapet Main Road, Ramapuram</p>
-            <p>Chennai 600 089</p>
-          </div>
-          <div>
-            <table className='text-sm'>
-              <tbody>
-                <tr>
-                  <td className='font-semibold pr-4'>Branch Name:</td>
-                  <td>Ramapuram</td>
-                </tr>
-                <tr>
-                  <td className='font-semibold pr-4'>Account Number:</td>
-                  <td>8976534575</td>
-                </tr>
-                <tr>
-                  <td className='font-semibold pr-4'>Routing Number:</td>
-                  <td>47463433</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div>
-        <table className='min-w-full text-sm text-left text-gray-500'>
-          <thead className="bg-gray-100">
-            <tr>
-              {['Invoice ID', 'Date', 'Time', 'Amount', 'Account Number', 'Actions'].map((header) => (
-                <th key={header} className="px-6 py-3 text-xs font-semibold text-gray-700 uppercase tracking-wider">{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="hover:bg-gray-50">
-              <td className='px-6 py-4'>#505524082</td>
-              <td className='px-6 py-4'>02-97-2023</td>
-              <td className='px-6 py-4'>10:28pm</td>
-              <td className='px-6 py-4'>45,000</td>
-              <td className='px-6 py-4'>234 4565 5787</td>
-              <td className='px-6 py-4'>
-                <button className="text-white bg-green-600 px-3 py-1 rounded-md hover:bg-green-700">
-                  View
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-const Document = () => {
-  return (
-    <div className="bg-white rounded-lg shadow-md p-4">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-100">
-          <tr>
-            {['Document Type', 'Download', 'View'].map((header) => (
-              <th key={header} className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {['ED-001', 'ED-002', 'ED-004'].map((doc) => (
-            <tr key={doc} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{doc}</td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <button className="text-white bg-blue-700 px-3 py-1 rounded-md hover:bg-blue-800">
-                  Download
-                </button>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <button className="text-white bg-green-600 px-3 py-1 rounded-md hover:bg-green-700">
-                  View
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'; // Import useParams to access route parameters
+import api from '../../../../Utils/axios';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { CiEdit } from 'react-icons/ci';
 
 const DriverDetails = () => {
+  const { driverId } = useParams(); // Extract driverId from URL parameters
+  const [driver, setDriver] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeAccount, setActiveAccount] = useState('accountInfo');
+
+  useEffect(() => {
+    const fetchDriverDetails = async () => {
+      if (driverId) {
+        try {
+          const response = await api.get(`/drivers/getdrivers/${driverId}`);
+          setDriver(response.data.driver); // Access driver details from the response
+          setLoading(false);
+        } catch (error) {
+          setError(error.message);
+          setLoading(false);
+        }
+      } else {
+        setError("Driver ID not provided");
+        setLoading(false);
+      }
+    };
+
+    fetchDriverDetails();
+  }, [driverId]);
 
   const renderComponent = () => {
     switch (activeAccount) {
       case 'accountInfo':
-        return <AccountInfo />;
+        return (
+          <div>
+            <h2 className="text-xl font-bold mb-4">Driver Information</h2>
+            <p><strong>Name:</strong> {driver ? `${driver.firstName} ${driver.lastName}` : ''}</p>
+            <p><strong>Email:</strong> {driver ? driver.email : ''}</p>
+            <p><strong>Phone:</strong> {driver ? driver.phone : ''}</p>
+            <p><strong>Date of Birth:</strong> {driver ? new Date(driver.dob).toLocaleDateString() : ''}</p>
+            <p><strong>License Number:</strong> {driver ? driver.licenseNumber : ''}</p>
+            <p><strong>Vehicle:</strong> {driver ? `${driver.vehicleMake} - ${driver.vehicleModel}` : ''}</p>
+            <p><strong>Insurance Policy:</strong> {driver ? driver.insurancePolicy : ''}</p>
+            <p><strong>Profile Picture:</strong> {driver ? <img src={`http://localhost:5000/${driver.profilePicture}`} alt="Profile" className="w-32 h-32 object-cover"/> : ''}</p>
+          </div>
+        );
       case 'security':
-        return <Security />;
+        return <div>Security details go here.</div>;
       case 'privacyUser':
-        return <Document />;
+        return <div>Documents go here.</div>;
       default:
-        return <AccountInfo />;
+        return <div>Driver Information</div>;
     }
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className='p-6'>

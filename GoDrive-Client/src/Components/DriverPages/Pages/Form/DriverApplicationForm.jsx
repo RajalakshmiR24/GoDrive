@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../../../Utils/axios';
-import { InputField } from './InputField';
+import { InputField } from '../../Form/InputField';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../Context/AuthContext';

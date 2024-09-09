@@ -78,13 +78,27 @@ const createDriver = asyncHandler(async (req, res) => {
   }
 });
 
-const getDriverById = async (req, res) => {
-  console.log(req.params, req.user);
+const getDriverById = asyncHandler(async (req, res) => {
+  console.log(req.params);
   
-  const userId = req.user._id; // Extract user ID from JWT
+  const { driverId } = req.params;
+  const userId = req.user._id;
+  console.log(req.params);
+  console.log(req.user._id);
+
 
   try {
-    const driver = await Driver.findOne({ user: userId }); // Find the driver by the associated user ID
+    // Admins can fetch any driver's details
+    if (req.user.role === 'admin') {
+      const driver = await Driver.findById(driverId);
+      if (!driver) {
+        return res.status(404).json({ message: 'Driver not found' });
+      }
+      return res.status(200).json(driver);
+    }
+
+    // Drivers can only fetch their own details
+    const driver = await Driver.findOne({ user: userId });
     if (!driver) {
       return res.status(404).json({ message: 'Driver not found' });
     }
@@ -92,7 +106,8 @@ const getDriverById = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Error fetching driver data', error: error.message });
   }
-};
+});
+
 
 const getDrivers = async (req, res) => {
   try {

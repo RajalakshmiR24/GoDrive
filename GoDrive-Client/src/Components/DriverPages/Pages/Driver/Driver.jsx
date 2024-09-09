@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../Utils/axios'; // Import your API instance
-import constants from '../../../Utils/constant';
+import api from '../../../../Utils/axios'; // Import your API instance
+import constants from '../../../../Utils/constant';
 
 const Driver = () => {
   const [isChecking, setIsChecking] = useState(false);
