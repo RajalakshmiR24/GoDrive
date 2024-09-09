@@ -40,6 +40,8 @@ const Sidebar = ({ open, setOpen }) => {
       submenu: true,
       submenuItems: [
         { title: "Access Control", path: "/admin/management/access-control" },
+        { title: "Booking Details", path: "/admin/booking-details", icon: <RiPagesLine /> },
+
       ],
     },
     { title: "Settings", path: "/admin/settings", icon: <IoSettingsSharp /> },

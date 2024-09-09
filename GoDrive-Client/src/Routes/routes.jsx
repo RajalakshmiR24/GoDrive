@@ -16,6 +16,7 @@ import NavigationMap from "../Components/DriverPages/Pages/OnDuty/NavigationMap"
 import ProfileManagement from "../Components/DriverPages/Pages/Profile/ProfileManagement"
 import RideManagement from "../Components/DriverPages/Pages/Rides/RideManagement"
 import RideHistory from "../Components/DriverPages/Pages/Rides/RideHistory";
+import BookingDetails from "../Components/AdminPages/Pages/DetailsPages/BookingDetails";
 
 // Lazy-loaded components
 const Home = lazy(() => import("../Components/CommonPages/Pages/Home"));
@@ -106,6 +107,7 @@ const AppRoutes = () => {
         { path: "profile", element: <Profile /> },
         { path: "settings", element: <AdminSettings /> },
         { path: "user-details", element: <UserDetails /> },
+        { path: "booking-details", element: <BookingDetails /> }, 
         { path: "driver-details/:driverId", element: <DriverDetails /> },
       ],
     },
