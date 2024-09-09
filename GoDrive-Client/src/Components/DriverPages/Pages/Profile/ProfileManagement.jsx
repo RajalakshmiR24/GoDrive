@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../../Utils/axios'; // Import the configured axios instance
+import api from '../../../../Utils/axios'; // Import the configured axios instance
 import { FaEdit, FaEye, FaDownload, FaSave } from 'react-icons/fa'; // Import icons
 import jsPDF from 'jspdf'; // Import jsPDF
-import BackButton from '../../DriverPages/Common/BackButton'; // Import BackButton component
-import { useAuth } from '../../../Context/AuthContext'; // Import useAuth hook
+import BackButton from '../../Common/BackButton'; // Import BackButton component
+import { useAuth } from '../../../../Context/AuthContext'; // Import useAuth hook
 
 const ProfileManagement = () => {
   const [profile, setProfile] = useState({

@@ -3,7 +3,7 @@ import api from '../../../../Utils/axios'; // Adjust the path to where you store
 import BackButton from '../../Common/BackButton'; // Adjust the path based on your file structure
 import { useAuth } from '../../../../Context/AuthContext'; // Adjust the path based on your file structure
 
-const TripManagement = () => {
+const RideManagement = () => {
   const [trips, setTrips] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const { authState } = useAuth(); // Get authentication state
@@ -87,4 +87,4 @@ const TripManagement = () => {
   );
 };
 
-export default TripManagement;
+export default RideManagement;

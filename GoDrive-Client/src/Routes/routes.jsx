@@ -9,12 +9,13 @@ import NotFound from "../Components/CommonPages/Pages/NotFound";
 import Loader from "../Utils/Loader";
 import ErrorBoundary from "../Utils/ErrorBoundary";
 import DutyLayout from "../Components/DriverPages/DutyLayout";
-import Driverdetails from "../Components/DriverPages/Pages/driverdetails";
-import EarningsTracker from "../Components/DriverPages/Pages/EarningsTracker";
+import Driverdetails from "../Components/DriverPages/Pages/Driver/DriverDetails";
+import EarningsTracker from "../Components/DriverPages/Pages/Rides/EarningsTracker";
 import Notifications from "../Components/DriverPages/Pages/Notifications";
 import NavigationMap from "../Components/DriverPages/Pages/OnDuty/NavigationMap";
-import ProfileManagement from "../Components/DriverPages/Pages/ProfileManagement"
-import TripManagement from "../Components/DriverPages/Pages/OnDuty/TripManagement"
+import ProfileManagement from "../Components/DriverPages/Pages/Profile/ProfileManagement"
+import RideManagement from "../Components/DriverPages/Pages/Rides/RideManagement"
+import RideHistory from "../Components/DriverPages/Pages/Rides/RideHistory";
 
 // Lazy-loaded components
 const Home = lazy(() => import("../Components/CommonPages/Pages/Home"));
@@ -43,9 +44,9 @@ const ForgotPassword = lazy(() => import("../Components/Auth/ForgotPassword"));
 const OtpVerification = lazy(() => import("../Components/Auth/OtpVerification"));
 
 // Driver Pages
-const Driver = lazy(() => import("../Components/DriverPages/Pages/Driver"));
+const Driver = lazy(() => import("../Components/DriverPages/Pages/Driver/Driver"));
 const DriverApplicationForm = lazy(() => import("../Components/DriverPages/Pages/Form/DriverApplicationForm"));
-const ProfileSettings = lazy(() => import("../Components/DriverPages/Pages/ProfileSettings"));
+const ProfileSettings = lazy(() => import("../Components/DriverPages/Pages/Profile/ProfileSettings"));
 const SuccessPage = lazy(() => import("../Components/DriverPages/Pages/SuccessPage"));
 
 //Duty Pages
@@ -128,8 +129,10 @@ const AppRoutes = () => {
         { path: "earnings", element: <EarningsTracker /> }, 
         { path: "navigation-map", element: <NavigationMap /> }, 
         { path: "profile", element: <ProfileManagement /> }, 
-        { path: "trip-management", element: <TripManagement /> }, 
+        { path: "ride-management", element: <RideManagement /> }, 
         { path: "notifications", element: <Notifications /> },
+        { path: "ride-history", element: <RideHistory/> },
+
       
       ],
     },

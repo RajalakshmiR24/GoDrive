@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faUser, faBell, faCar } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faUser, faBell, faCar,faHistory } from '@fortawesome/free-solid-svg-icons';
 
 const DropdownMenu = ({ isOpen, onClose, onLogout }) => {
   if (!isOpen) return null;
@@ -12,8 +12,11 @@ const DropdownMenu = ({ isOpen, onClose, onLogout }) => {
       <Link to="/duty/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={onClose}>
         <FontAwesomeIcon icon={faUser} className="mr-2" /> Profile
       </Link>
-      <Link to="/duty/trip-management" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={onClose}>
-        <FontAwesomeIcon icon={faCar} className="mr-2" /> Trip Management
+      <Link to="/duty/ride-management" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={onClose}>
+        <FontAwesomeIcon icon={faCar} className="mr-2" /> Ride Management
+      </Link>
+      <Link to="/duty/ride-history" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={onClose}>
+        <FontAwesomeIcon icon={faHistory} className="mr-2" /> Ride History
       </Link>
       <Link to="/duty/notifications" className="block px-4 py-2 text-gray-700 hover:bg-gray-100" onClick={onClose}>
         <FontAwesomeIcon icon={faBell} className="mr-2" /> Notifications
