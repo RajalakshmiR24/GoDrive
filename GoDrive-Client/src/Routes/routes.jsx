@@ -30,7 +30,6 @@ const MailSentSuccess = lazy(() => import("../Components/Auth/MailSentSuccess ")
 
 // User Pages
 const ManageAccount = lazy(() => import('../Components/UserPages/Pages/Profiles/Manage_account'));
-const Settings = lazy(() => import('../Components/UserPages/Pages/Profiles/Settings'));
 const Support = lazy(() => import('../Components/UserPages/Pages/Profiles/Support'));
 const Wallet = lazy(() => import('../Components/UserPages/Pages/Profiles/Wallet'));
 const MyTrips = lazy(() => import('../Components/UserPages/Pages/Mytrips'));
@@ -150,7 +149,6 @@ const AppRoutes = () => {
         { path: "rental-form", element: <RentalForm /> },
         { path: "mytrips", element: <MyTrips /> },
         { path: "profiles/manage_account", element: <ManageAccount /> },
-        { path: "profiles/settings", element: <Settings /> },
         { path: "profiles/support", element: <Support /> },
         { path: "profiles/wallet", element: <Wallet /> },
       ],

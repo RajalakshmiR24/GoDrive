@@ -125,7 +125,138 @@ const AccountInfo = () => {
     </div>
   );
 }
+const TaxProfile = () => {
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
+  return (
+
+        <div className="min-h-screen bg-gray-50">
+      <div className="p-4">
+        <div className="flex">
+          <div className="w-3/4 pl-4">
+            <div className="flex mb-4 border-b border-gray-300">
+              <button className="pb-2 border-b-2 border-black">
+                Personal Tax Info
+              </button>
+            </div>
+            <h1>
+              <b>Personal tax info</b>
+            </h1>
+            <br />
+            <form className="space-y-4">
+              <div>
+                <label className="block text-gray-700">
+                  Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="w-1/2 mt-1 p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700">PAN</label>
+                <input
+                  type="text"
+                  className="w-1/2 mt-1 p-2 border border-gray-300 rounded"
+                  placeholder="AAAAA9999A"
+                />
+                <small className="text-gray-500 block mt-1">e.g. AAAAA9999A</small>
+              </div>
+              <div>
+                <label className="block text-gray-700">Street address</label>
+                <input
+                  type="text"
+                  className="w-1/2 mt-1 p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700">City</label>
+                <input
+                  type="text"
+                  className="w-1/2 mt-1 p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700">State</label>
+                <input
+                  type="text"
+                  className="w-1/2 mt-1 p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700">PIN code</label>
+                <input
+                  type="number"
+                  className="w-1/2 mt-1 p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700">Country</label>
+                <input
+                  type="text"
+                  className="w-1/2 mt-1 p-2 border border-gray-300 rounded"
+                />
+              </div>
+              <div className="flex items-center">
+                <input
+                  id="tax-declaration"
+                  type="checkbox"
+                  className={`h-4 w-4 focus:ring-indigo-500 border-gray-300 rounded ${
+                    !isCheckboxChecked && "text-red-500"
+                  }`}
+                  checked={isCheckboxChecked}
+                  onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
+                />
+                <label
+                  htmlFor="tax-declaration"
+                  className={`ml-2 block ${
+                    !isCheckboxChecked ? "text-red-500" : "text-gray-700"
+                  }`}
+                >
+                  <b>Disclaimer</b>
+                </label>
+              </div>
+              {!isCheckboxChecked && (
+                <div className="text-red-500 flex items-center mt-2">
+                  <span>Disclaimer is not selected</span>
+                </div>
+              )}
+            </form>
+            <ol className="list-decimal list-inside mt-4 text-gray-700 w-1/2">
+              <li>
+                I confirm that the information I have provided to Uber regarding
+                my local address, State and PAN is correct. I consent expressly
+                to Uber to issue GST compliant invoice on my behalf, for the
+                services I provides through Uber Platform.
+              </li>
+              <li>
+                I understand and agree that in case there is any change in
+                information I have provided to Godrive, it is my obligation and
+                responsibility to inform such changes to Uber. I understand that
+                I shall be liable to any tax liability arising on account of
+                furnishing incorrect information and / or not informing any
+                change in information to Godrive.
+              </li>
+              <li>
+                I acknowledge and agree that Godrive does not undertake any
+                responsibility if I provide false information, including but not
+                limited to information related to my local address & PAN.
+              </li>
+            </ol>
+            <div className="mt-4">
+              <button
+                type="submit"
+                className="bg-black text-white px-4 py-2 w-1/2 rounded"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Security = () => {
   const [isPopupVisible, setPopupVisible] = useState(false);
@@ -253,7 +384,6 @@ const PrivacyUser = () => {
   );
 };
 
-
 const ManageAccount = () => {
   const [activeAccount, setActiveAccount] = useState('accountInfo');
 
@@ -261,10 +391,12 @@ const ManageAccount = () => {
     switch (activeAccount) {
       case 'accountInfo':
         return <AccountInfo />;
-      case 'security':
-        return <Security />;
+      case 'taxProfile':
+          return <TaxProfile />;
       case 'privacyUser':
         return <PrivacyUser />;
+      case 'security':
+          return <Security />;
       default:
         return <AccountInfo />;
     }
@@ -273,12 +405,18 @@ const ManageAccount = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="p-4">
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-4 gap-4 mb-4"> {/* Updated to grid-cols-4 */}
           <button
             className={`bg-gray-200 text-black px-4 py-2 ${activeAccount === 'accountInfo' ? 'border-b-2 border-black' : ''}`}
             onClick={() => setActiveAccount('accountInfo')}
           >
             Account Info
+          </button>
+          <button  // New tab for Tax Profile
+            className={`bg-gray-200 text-black px-4 py-2 ${activeAccount === 'taxProfile' ? 'border-b-2 border-black' : ''}`}
+            onClick={() => setActiveAccount('taxProfile')}
+          >
+            Tax Profile
           </button>
           <button
             className={`bg-gray-200 text-black px-4 py-2 ${activeAccount === 'security' ? 'border-b-2 border-black' : ''}`}
@@ -292,6 +430,7 @@ const ManageAccount = () => {
           >
             Privacy & Data
           </button>
+          
         </div>
         {renderComponent()}
       </div>

@@ -15,7 +15,6 @@ const menuItems = [
   { href: '/user/profiles/wallet', label: 'Wallet', icon: <BsWalletFill className="mr-2" /> },
   { href: '/user/profiles/support', label: 'Support', icon: <BiSupport className="mr-2" /> },
   { href: '/user/profiles/manage_account', label: 'Manage Account', icon: <RiAccountCircleFill className="mr-2" /> },
-  { href: '/user/profiles/settings', label: 'Settings', icon: <IoMdSettings className="mr-2" /> },
 ];
 
 const Header = () => {
